@@ -1,7 +1,7 @@
 # Проект «Большое путешествие» [![Check status][check-image]][check-url]
 
 * Студент: [Volodymyr Danylyuk](https://up.htmlacademy.ru/ecmascript/13/user/1247033).
-* Наставник: `Ruslan Malogulko(https://htmlacademy.ru/profile/id9728)`.
+* Наставник: [Ruslan Malogulko](https://htmlacademy.ru/profile/id9728).
 
 ---
 
