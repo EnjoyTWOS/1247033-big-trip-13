@@ -33,6 +33,6 @@ const eventsList = mainEvents.querySelector(`.trip-events__list`);
 
 render(eventsList, createEditFormTemplate(), `afterbegin`);
 
-for (let i = 0; i < TRIPS_QUANTITY; i++){
+for (let i = 0; i < TRIPS_QUANTITY; i++) {
   render(eventsList, createTripEventTemplate(), `beforeend`);
-};
+}

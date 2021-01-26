@@ -36,4 +36,4 @@ export const createTripEventTemplate = () => {
                 </button>
               </div>
             </li>`;
-          };
+};
