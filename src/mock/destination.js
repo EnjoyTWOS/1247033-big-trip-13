@@ -1,17 +1,5 @@
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
-const shuffleArray = (array) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
+import dayjs from "dayjs";
+import {getRandomInteger, shuffleArray} from "../utils.js";
 
 const generateType = () => {
   const pointTypes = [
@@ -64,16 +52,16 @@ const generateOffers = () => {
     }
   ];
 
-  let chosenOffer = [];
+  let chosenOffers = [];
 
   const offersQuantity = getRandomInteger(0, offers.length);
 
   if (offersQuantity > 0) {
     for (let i = 0; i < offersQuantity; i++) {
-      chosenOffer.push(offers[i]);
+      chosenOffers.push(offers[i]);
     }
   }
-  return shuffleArray(chosenOffer);
+  return shuffleArray(chosenOffers);
 };
 
 const generateDescription = () => {
@@ -103,10 +91,10 @@ const generateDescription = () => {
   return chosenDescriptions.join(` `);
 };
 
-const generateDestenation = () => {
+const generateDestination = () => {
   return {
     description: generateDescription(),
-    cityName: generateCityName(),
+    name: generateCityName(),
     pictures: [
       {
         src: `http://picsum.photos/300/200?r=${Math.random()}`,
@@ -125,7 +113,7 @@ const generateOffer = () => {
 
 const generatePrice = () => {
   const MIN_PRICE = 10;
-  const MAX_PRICE = 10000;
+  const MAX_PRICE = 120;
 
   const price = getRandomInteger(MIN_PRICE, MAX_PRICE);
 
@@ -141,46 +129,47 @@ const generateID = () => {
   return id;
 };
 
-const generateDate = () => {
-  const MIN_YEAR = 2021;
-  const MAX_YEAR = 2025;
-  const MIN_MONTH = 1;
-  const MAX_MONTH = 12;
-  const MAX_DAY = 28;
-  const MAX_HOUR = 23;
-  const MAX_MINUTES = 59;
+const generateStartDate = () => {
+  const MAX_DAYS_GAP = 4;
+  const MAX_MINUTES_GAP = 59;
+  const MAX_HOURS_GAP = 3;
 
-  const randomYear = getRandomInteger(MIN_YEAR, MAX_YEAR);
-  const randomMonth = getRandomInteger(MIN_MONTH, MAX_MONTH);
-  const randomDay = getRandomInteger(0, MAX_DAY);
-  const randomHour = getRandomInteger(0, MAX_HOUR);
-  const randomMinutes = getRandomInteger(0, MAX_MINUTES);
+  const daysGap = getRandomInteger(-MAX_DAYS_GAP, MAX_DAYS_GAP);
+  const hoursGap = getRandomInteger(-MAX_HOURS_GAP, MAX_HOURS_GAP);
+  const minutesGap = getRandomInteger(-MAX_MINUTES_GAP, MAX_MINUTES_GAP);
 
-  return new Date(randomYear, randomMonth, randomDay, randomHour, randomMinutes);
+  return dayjs().add(daysGap, `day`).add(hoursGap, `hour`).add(minutesGap, `minute`).toDate();
 };
 
-const generatePoint = () => {
+const generateEndDate = (startDate) => {
+  const MAX_TIME_DIFFERENCE = 40;
+  const timeDifference = getRandomInteger(0, MAX_TIME_DIFFERENCE);
+
+  return dayjs(startDate).add(timeDifference, `minute`).toDate();
+};
+
+export const generatePoint = () => {
   return {
     basePrice: generatePrice(),
-    dateFrom: generateDate(),
-    dateTo: generateDate(),
-    destination: generateDestenation(),
+    dateFrom: generateStartDate(),
+    dateTo: generateEndDate(generateStartDate()),
+    destination: generateDestination(),
     id: generateID(),
-    isFavorite: Boolean(getRandomInteger(0, 1)),
+    favorite: Boolean(getRandomInteger(0, 1)),
     offers: generateOffer(),
     type: generateType()
   };
 };
 
-const generateLocalPoint = () => {
+/* const generateLocalPoint = () => {
   return {
     basePrice: generatePrice(),
-    dateFrom: generateDate(),
-    dateTo: generateDate(),
-    destination: generateDestenation(),
+    dateFrom: generateStartDate(),
+    dateTo: generateEndDate(generateStartDate()),
+    destination: generateDestination(),
     id: generateID(),
-    isFavorite: Boolean(getRandomInteger(0, 1)),
+    favorite: Boolean(getRandomInteger(0, 1)),
     offers: generateOffer(),
     type: generateType()
   };
-};
+};*/
