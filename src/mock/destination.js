@@ -160,16 +160,3 @@ export const generatePoint = () => {
     type: generateType()
   };
 };
-
-/* const generateLocalPoint = () => {
-  return {
-    basePrice: generatePrice(),
-    dateFrom: generateStartDate(),
-    dateTo: generateEndDate(generateStartDate()),
-    destination: generateDestination(),
-    id: generateID(),
-    favorite: Boolean(getRandomInteger(0, 1)),
-    offers: generateOffer(),
-    type: generateType()
-  };
-};*/
