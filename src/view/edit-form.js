@@ -24,6 +24,7 @@ const BLANK_POINT = {
 const createEditFormTemplate = (point) => {
 
   const {basePrice, dateFrom, dateTo, type, destination} = point;
+  const rollupButtonNewClass = `event__rollup-btn--up`;
 
   const startTime = dayjs(dateFrom).format(`DD`) + `/` + dayjs(dateFrom).format(`MM`) + `/` + dayjs(dateFrom).format(`YY`) + ` ` + dayjs(dateFrom).format(`HH`) + `:` + dayjs(dateFrom).format(`mm`);
   const endTime = dayjs(dateTo).format(`DD`) + `/` + dayjs(dateTo).format(`MM`) + `/` + dayjs(dateTo).format(`YY`) + ` ` + dayjs(dateTo).format(`HH`) + `:` + dayjs(dateTo).format(`mm`);
@@ -125,7 +126,7 @@ const createEditFormTemplate = (point) => {
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
+      <button class="event__rollup-btn ${rollupButtonNewClass}" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
     </header>
