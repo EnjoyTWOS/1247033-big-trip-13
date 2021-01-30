@@ -1,4 +1,6 @@
-export const createTownsAndDatesTemplate = () => {
+import {createElement} from "../utils.js";
+
+const createTownsAndDatesTemplate = () => {
   return `<section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">
     <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
@@ -7,3 +9,25 @@ export const createTownsAndDatesTemplate = () => {
   </div>
   </section>`;
 };
+
+export default class TownsAndDates {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTownsAndDatesTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+
+}

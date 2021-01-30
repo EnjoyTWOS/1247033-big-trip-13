@@ -1,24 +1,29 @@
 import dayjs from "dayjs";
-import {getRandomInteger} from "../utils.js";
+import {getRandomInteger, createElement} from "../utils.js";
 
-export const createEditFormTemplate = (point = {}) => {
+const BLANK_POINT = {
+  basePrice: 0,
+  dateFrom: null,
+  dateTo: null,
+  destination: {
+    description: ``,
+    name: ``,
+    pictures: [
+      {
+        src: ``,
+        description: ``
+      }
+    ]
+  },
+  id: 0,
+  favorite: false,
+  offers: [],
+  type: `bus`
+};
 
-  const {
-    basePrice = 0,
-    dateFrom = null,
-    dateTo = null,
-    destination = {
-      description: ``,
-      name: ``,
-      pictures: [
-        {
-          src: ``,
-          description: ``
-        }
-      ]
-    },
-    type = `bus`
-  } = point;
+const createEditFormTemplate = (point) => {
+
+  const {basePrice, dateFrom, dateTo, type, destination} = point;
 
   const startTime = dayjs(dateFrom).format(`DD`) + `/` + dayjs(dateFrom).format(`MM`) + `/` + dayjs(dateFrom).format(`YY`) + ` ` + dayjs(dateFrom).format(`HH`) + `:` + dayjs(dateFrom).format(`mm`);
   const endTime = dayjs(dateTo).format(`DD`) + `/` + dayjs(dateTo).format(`MM`) + `/` + dayjs(dateTo).format(`YY`) + ` ` + dayjs(dateTo).format(`HH`) + `:` + dayjs(dateTo).format(`mm`);
@@ -184,3 +189,26 @@ export const createEditFormTemplate = (point = {}) => {
   </form>
 </li>`;
 };
+
+export default class PointEdit {
+  constructor(point = BLANK_POINT) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEditFormTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
