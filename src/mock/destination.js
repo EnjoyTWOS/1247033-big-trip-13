@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import {getRandomInteger, shuffleArray} from "../utils.js";
+import {getRandomInteger, shuffleArray} from "../utils/common.js";
 
 const generateType = () => {
   const pointTypes = [

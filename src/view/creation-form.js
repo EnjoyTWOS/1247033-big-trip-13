@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
-import {getRandomInteger, createElement} from "../utils.js";
+import {getRandomInteger} from "../utils/common.js";
+import AbstractView from "../view/abstract.js";
 
 const BLANK_POINT = {
   basePrice: 0,
@@ -200,25 +201,13 @@ export const createCreationFormTemplate = (point) => {
   </ul>`;
 };
 
-export default class PointCreation {
+export default class PointCreation extends AbstractView {
   constructor(point = BLANK_POINT) {
+    super();
     this._point = point;
-    this._element = null;
   }
 
   getTemplate() {
     return createCreationFormTemplate(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
