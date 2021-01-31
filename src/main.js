@@ -6,10 +6,11 @@ import SortingView from "./view/sorting.js";
 import PointCreationView from "./view/creation-form.js";
 import PointEditView from "./view/edit-form.js";
 import PointView from "./view/trip-event.js";
+import EmptyListView from "./view/list-empty.js";
 import {generatePoint} from "./mock/destination.js";
 import {render, RenderPosition} from "./utils.js";
 
-const TRIPS_QUANTITY = 20;
+const TRIPS_QUANTITY = 0;
 
 const points = new Array(TRIPS_QUANTITY).fill().map(generatePoint);
 
@@ -28,13 +29,28 @@ const renderPoint = (pointListElement, point) => {
     pointListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
   };
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
   pointComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
     replaceCardToForm();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   pointEditComponent.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
     evt.preventDefault();
     replaceFormToCard();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
+
+  pointEditComponent.getElement().querySelector(`.event__rollup-btn--up`).addEventListener(`click`, () => {
+    replaceFormToCard();
+    document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
   render(pointListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
@@ -50,7 +66,12 @@ render(tripInfo, new PriceView().getElement(), RenderPosition.BEFOREEND);
 const mainEvents = document.querySelector(`.trip-events`);
 
 render(mainEvents, new SortingView().getElement(), RenderPosition.BEFOREEND);
-render(mainEvents, new PointCreationView(points[1]).getElement(), RenderPosition.BEFOREEND);
+
+if (TRIPS_QUANTITY === 0) {
+  render(mainEvents, new EmptyListView().getElement(), RenderPosition.BEFOREEND);
+} else {
+  render(mainEvents, new PointCreationView(points[1]).getElement(), RenderPosition.BEFOREEND);
+}
 
 const eventsList = mainEvents.querySelector(`.trip-events__list`);
 
