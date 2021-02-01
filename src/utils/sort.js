@@ -6,11 +6,11 @@ export const sortPointDate = (pointA, pointB) => {
 
 export const sortPointPrice = (pointA, pointB) => {
 
-  return pointA.basePrice.diff(pointB.basePrice);
+  return pointB.basePrice - pointA.basePrice;
 };
 
 export const sortPointTime = (pointA, pointB) => {
 
-  return Math.round((((pointA.dateTo - pointA.dateFrom) % 86400000) % 3600000) / 60000).diff(Math.round((((pointB.dateTo - pointB.dateFrom) % 86400000) % 3600000) / 60000));
+  return Math.round((((pointB.dateTo - pointB.dateFrom) % 86400000) % 3600000) / 60000) - (Math.round((((pointA.dateTo - pointA.dateFrom) % 86400000) % 3600000) / 60000));
 };
 
