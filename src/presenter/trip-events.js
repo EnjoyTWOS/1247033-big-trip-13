@@ -30,7 +30,6 @@ export default class TripEvents {
 
   init(points) {
     this._points = points.sort(sortPointDate);
-    this._sourcedPoints = this._points.slice();
 
     this._renderBoard();
     render(this._mainEvents, this._eventsList, RenderPosition.BEFOREEND);
@@ -45,7 +44,7 @@ export default class TripEvents {
         this._points.sort(sortPointPrice);
         break;
       default:
-        this._points = this._sourcedPoints;
+        this._points.sort(sortPointDate);
     }
 
     this._currentSortType = sortType;
@@ -68,7 +67,7 @@ export default class TripEvents {
   }
 
   _handlePointChange(updatedPoint) {
-    this._points = updateItem(this._sourcedPoints, updatedPoint);
+    this._points = updateItem(this._points, updatedPoint);
     this._pointPresenter[updatedPoint.id].init(updatedPoint);
   }
 
