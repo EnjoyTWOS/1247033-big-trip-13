@@ -4,6 +4,8 @@ import PointPresenter from "./point.js";
 import PointView from "../view/trip-event.js";
 import EmptyListView from "../view/list-empty.js";
 import EventsListView from "../view/events-list.js";
+import {sortPointDate, sortPointPrice, sortPointTime} from "../utils/sort.js";
+import {SortType} from "../utils/const.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {updateItem} from "../utils/common.js";
 
@@ -14,6 +16,7 @@ export default class TripEvents {
     this._boardContainer = boardContainer;
     this._mainEvents = document.querySelector(`.trip-events`);
     this._pointPresenter = {};
+    this._currentSortType = SortType.DATE;
 
     this._eventsList = new EventsListView();
     this._sortComponent = new SortingView();
@@ -22,14 +25,39 @@ export default class TripEvents {
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(points) {
-    this._points = points;
-
+    this._points = points.sort(sortPointDate);
 
     this._renderBoard();
     render(this._mainEvents, this._eventsList, RenderPosition.BEFOREEND);
+  }
+
+  _sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.TIME:
+        this._points.sort(sortPointTime);
+        break;
+      case SortType.PRICE:
+        this._points.sort(sortPointPrice);
+        break;
+      default:
+        this._points.sort(sortPointDate);
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortPoints(sortType);
+    this._clearPointsList();
+    this._renderPoints();
   }
 
   _handleModeChange() {
@@ -45,6 +73,7 @@ export default class TripEvents {
 
   _renderSorting() {
     render(this._mainEvents, this._sortComponent, RenderPosition.BEFOREEND);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderPoint(point) {
