@@ -119,15 +119,7 @@ const generatePrice = () => {
 
   return price;
 };
-
-const generateID = () => {
-  const MIN_ID = 0;
-  const MAX_ID = 20;
-
-  const id = getRandomInteger(MIN_ID, MAX_ID);
-
-  return id;
-};
+const generateID = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 const generateStartDate = () => {
   const MAX_DAYS_GAP = 4;
