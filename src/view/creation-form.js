@@ -187,11 +187,11 @@ export const createCreationFormTemplate = (point) => {
 
           <div class="event__photos-container">
             <div class="event__photos-tape">
-              <img class="event__photo" src="${destination.pictures[0].src}" alt="${destination.pictures[0].description}">
-              <img class="event__photo" src="${destination.pictures[0].src}" alt="${destination.pictures[0].description}">
-              <img class="event__photo" src="${destination.pictures[0].src}" alt="${destination.pictures[0].description}">
-              <img class="event__photo" src="${destination.pictures[0].src}" alt="${destination.pictures[0].description}">
-              <img class="event__photo" src="${destination.pictures[0].src}" alt="${destination.pictures[0].description}">
+              <img class="event__photo" src="${destination.pictures[getRandomInteger(0, 19)].src}" alt="${destination.pictures[getRandomInteger(0, 19)].description}">
+              <img class="event__photo" src="${destination.pictures[getRandomInteger(0, 19)].src}" alt="${destination.pictures[getRandomInteger(0, 19)].description}">
+              <img class="event__photo" src="${destination.pictures[getRandomInteger(0, 19)].src}" alt="${destination.pictures[getRandomInteger(0, 19)].description}">
+              <img class="event__photo" src="${destination.pictures[getRandomInteger(0, 19)].src}" alt="${destination.pictures[getRandomInteger(0, 19)].description}">
+              <img class="event__photo" src="${destination.pictures[getRandomInteger(0, 19)].src}" alt="${destination.pictures[getRandomInteger(0, 19)].description}">
             </div>
           </div>
         </section>

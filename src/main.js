@@ -22,3 +22,4 @@ render(mainHeader, new TownsAndDatesView(), RenderPosition.AFTERBEGIN);
 const tripInfo = mainHeader.querySelector(`.trip-info`);
 render(tripInfo, new PriceView(), RenderPosition.BEFOREEND);
 tripEventsPresenter.init(points);
+

@@ -91,24 +91,51 @@ const generateDescription = () => {
   return chosenDescriptions.join(` `);
 };
 
+const generatePicturesSrc = () => `http://picsum.photos/300/200?r=${Math.random()}`;
+
+const generatePictures = () => {
+  let picturesArray = [];
+
+  for (let i = 0; i < 20; i++) {
+    picturesArray.push({
+      src: generatePicturesSrc(),
+      description: generateDescription()
+    });
+  }
+  return picturesArray;
+};
+
 const generateDestination = () => {
   return {
     description: generateDescription(),
     name: generateCityName(),
-    pictures: [
-      {
-        src: `http://picsum.photos/300/200?r=${Math.random()}`,
-        description: generateDescription()
-      }
-    ]
+    pictures: generatePictures()
   };
 };
 
 const generateOffer = () => {
-  return {
-    type: generateType(),
-    offers: generateOffers()
-  };
+  let offersArray = [];
+
+  const offerTypes = [
+    `taxi`,
+    `bus`,
+    `train`,
+    `ship`,
+    `transport`,
+    `drive`,
+    `flight`,
+    `check-in`,
+    `sightseeing`,
+    `restaurant`
+  ];
+
+  for (let i = 0; i < offerTypes.length; i++) {
+    offersArray.push({
+      type: offerTypes[i],
+      offers: generateOffers()
+    });
+  }
+  return offersArray[getRandomInteger(0, 9)];
 };
 
 const generatePrice = () => {
