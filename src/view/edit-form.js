@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import {getRandomInteger} from "../utils/common.js";
 import SmartView from "./smart.js";
+import flatpickr from "flatpickr";
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const BLANK_POINT = {
   basePrice: 0,
@@ -183,13 +185,17 @@ export default class PointEdit extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
     this._data = PointEdit.parsePointToData(point);
+    this._datepicker = null;
 
     this._offersTypeHandler = this._offersTypeHandler.bind(this);
     this._photoChangeHandler = this._photoChangeHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formClickHandler = this._formClickHandler.bind(this);
+    this._dateChangeHandler = this._dateChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatepicker();
   }
 
   reset(point) {
@@ -213,10 +219,40 @@ export default class PointEdit extends SmartView {
     .addEventListener(`change`, this._offersTypeHandler);
   }
 
+  _setDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    if (this._data.dateFrom) {
+      this._datepicker = flatpickr(
+          this.getElement().querySelector(`#event-start-time-1`),
+          {
+            dateFormat: `d/m/Y H:i`,
+            defaultDate: this._data.dateFrom,
+            onChange: this._dateChangeHandler
+          }
+      );
+    }
+
+    if (this._data.dateTo) {
+      this._datepicker = flatpickr(
+          this.getElement().querySelector(`#event-end-time-1`),
+          {
+            dateFormat: `d/m/Y H:i`,
+            defaultDate: this._data.dateTo,
+            onChange: this._endDateChangeHandler
+          }
+      );
+    }
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setFormClickHandler(this._callback.formClick);
+    this._setDatepicker();
   }
 
   _photoChangeHandler(evt) {
@@ -226,6 +262,18 @@ export default class PointEdit extends SmartView {
       photo.src = this._data.destination.pictures[getRandomInteger(0, 19)].src;
       photo.alt = this._data.destination.pictures[getRandomInteger(0, 19)].description;
     }
+  }
+
+  _dateChangeHandler([userDate]) {
+    this.updateData({
+      dateFrom: dayjs(userDate).hour(23).minute(59).second(59).toDate()
+    });
+  }
+
+  _endDateChangeHandler([userDate]) {
+    this.updateData({
+      dateTo: dayjs(userDate).hour(23).minute(59).second(59).toDate()
+    });
   }
 
   _offersTypeHandler(evt) {
