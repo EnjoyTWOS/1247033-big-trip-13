@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import {getRandomInteger} from "../utils/common.js";
-import AbstractView from "../view/abstract.js";
+import SmartView from "./smart.js";
 
 const BLANK_POINT = {
   basePrice: 0,
@@ -22,13 +22,35 @@ const BLANK_POINT = {
   type: `bus`
 };
 
-const createEditFormTemplate = (point) => {
+const createEditFormTemplate = (data) => {
 
-  const {basePrice, dateFrom, dateTo, type, destination} = point;
+  const {basePrice, dateFrom, dateTo, type, destination, offers} = data;
   const rollupButtonNewClass = `event__rollup-btn--up`;
 
   const startTime = dayjs(dateFrom).format(`DD`) + `/` + dayjs(dateFrom).format(`MM`) + `/` + dayjs(dateFrom).format(`YY`) + ` ` + dayjs(dateFrom).format(`HH`) + `:` + dayjs(dateFrom).format(`mm`);
   const endTime = dayjs(dateTo).format(`DD`) + `/` + dayjs(dateTo).format(`MM`) + `/` + dayjs(dateTo).format(`YY`) + ` ` + dayjs(dateTo).format(`HH`) + `:` + dayjs(dateTo).format(`mm`);
+  const getPhotosSrc = () => destination.pictures[getRandomInteger(0, 19)].src;
+
+  const changeOffers = (offer) => {
+    let actualOffers = [];
+    for (let i = 0; i < offer.offers.length; i++) {
+      actualOffers.push(`<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.type}-1" type="checkbox" name="event-offer-${offer.type}" ${getRandomInteger(0, 1) > 0 ? `checked` : ``}>
+      <label class="event__offer-label" for="event-offer-${offer.type}-1">
+        <span class="event__offer-title">${offer.offers[i].title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.offers[i].price}</span>
+      </label>
+    </div>`);
+    }
+
+    if (offer.type === `taxi`) {
+      return actualOffers.join(``);
+    }
+
+    return actualOffers.join(``);
+  };
+
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -134,85 +156,97 @@ const createEditFormTemplate = (point) => {
     <section class="event__details">
       <section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
         <div class="event__available-offers">
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${getRandomInteger(0, 1) > 0 ? `checked` : ``}>
-            <label class="event__offer-label" for="event-offer-luggage-1">
-              <span class="event__offer-title">Add luggage</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">50</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" ${getRandomInteger(0, 1) > 0 ? `checked` : ``}>
-            <label class="event__offer-label" for="event-offer-comfort-1">
-              <span class="event__offer-title">Switch to comfort</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">80</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal" ${getRandomInteger(0, 1) > 0 ? `checked` : ``}>
-            <label class="event__offer-label" for="event-offer-meal-1">
-              <span class="event__offer-title">Add meal</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">15</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats" ${getRandomInteger(0, 1) > 0 ? `checked` : ``}>
-            <label class="event__offer-label" for="event-offer-seats-1">
-              <span class="event__offer-title">Choose seats</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">5</span>
-            </label>
-          </div>
-
-          <div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train" ${getRandomInteger(0, 1) > 0 ? `checked` : ``}>
-            <label class="event__offer-label" for="event-offer-train-1">
-              <span class="event__offer-title">Travel by train</span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">40</span>
-            </label>
-          </div>
-        </div>
+        ${changeOffers(offers)}
       </section>
 
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${destination.description}</p>
+
+        <div class="event__photos-container">
+            <div class="event__photos-tape">
+              <img class="event__photo" src="${getPhotosSrc()}" alt="${destination.pictures[getRandomInteger(0, 19)].description}">
+              <img class="event__photo" src="${getPhotosSrc()}" alt="${destination.pictures[getRandomInteger(0, 19)].description}">
+              <img class="event__photo" src="${getPhotosSrc()}" alt="${destination.pictures[getRandomInteger(0, 19)].description}">
+              <img class="event__photo" src="${getPhotosSrc()}" alt="${destination.pictures[getRandomInteger(0, 19)].description}">
+              <img class="event__photo" src="${getPhotosSrc()}" alt="${destination.pictures[getRandomInteger(0, 19)].description}">
+            </div>
+          </div>
       </section>
     </section>
   </form>
 </li>`;
 };
 
-export default class PointEdit extends AbstractView {
+export default class PointEdit extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
-    this._point = point;
+    this._data = PointEdit.parsePointToData(point);
 
+    this._offersTypeHandler = this._offersTypeHandler.bind(this);
+    this._photoChangeHandler = this._photoChangeHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._formClickHandler = this._formClickHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
+  reset(point) {
+    this.updateData(
+        PointEdit.parsePointToData(point)
+    );
+  }
+
+
   getTemplate() {
-    return createEditFormTemplate(this._point);
+    return createEditFormTemplate(this._data);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+    .querySelector(`.event__input--destination`)
+    .addEventListener(`change`, this._photoChangeHandler);
+
+    this.getElement()
+    .querySelector(`.event__type-group`)
+    .addEventListener(`change`, this._offersTypeHandler);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setFormClickHandler(this._callback.formClick);
+  }
+
+  _photoChangeHandler(evt) {
+    evt.preventDefault();
+    const photos = this.getElement().querySelectorAll(`.event__photo`);
+    for (let photo of photos) {
+      photo.src = this._data.destination.pictures[getRandomInteger(0, 19)].src;
+      photo.alt = this._data.destination.pictures[getRandomInteger(0, 19)].description;
+    }
+  }
+
+  _offersTypeHandler(evt) {
+    evt.preventDefault();
+
+    this._data.type = evt.target.value;
+    this._data.offers.type = evt.target.value;
+    this.updateData({
+      type: this._data.type,
+      offers: this._data.offers
+    });
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(this._data);
   }
 
   _formClickHandler(evt) {
     evt.preventDefault();
-    this._callback.formClick(this._point);
+    this._callback.formClick(this._data);
   }
 
   setFormSubmitHandler(callback) {
@@ -223,5 +257,21 @@ export default class PointEdit extends AbstractView {
   setFormClickHandler(callback) {
     this._callback.formClick = callback;
     this.getElement().querySelector(`.event__rollup-btn--up`).addEventListener(`click`, this._formClickHandler);
+  }
+
+  static parsePointToData(point) {
+    return Object.assign(
+        {},
+        point,
+        {
+          type: point.type,
+          offers: point.offers,
+        }
+    );
+  }
+
+  static parseDataToPoint(data) {
+    data = Object.assign({}, data);
+    return data;
   }
 }

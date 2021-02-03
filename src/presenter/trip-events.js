@@ -1,5 +1,4 @@
 import SortingView from "../view/sorting.js";
-import PointCreationView from "../view/creation-form.js";
 import PointPresenter from "./point.js";
 import PointView from "../view/trip-event.js";
 import EmptyListView from "../view/list-empty.js";
@@ -106,7 +105,6 @@ export default class TripEvents {
     if (TRIPS_QUANTITY === 0) {
       this._renderEmptyList();
     } else {
-      render(this._mainEvents, new PointCreationView(this._points[1]), RenderPosition.BEFOREEND);
       this._renderPoints();
       remove(this._emptyListComponent);
     }
